@@ -18,6 +18,7 @@ import {
   ResetMarksOnEnter,
   FileHandler,
 } from "../extensions"
+import { Markdown } from 'tiptap-markdown';
 import { cn } from "@/lib/utils"
 import { fileToBase64, getOutput, randomId } from "../utils"
 import { useThrottle } from "../hooks/use-throttle"
@@ -25,7 +26,7 @@ import { toast } from "sonner"
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content
-  output?: "html" | "json" | "text"
+  output?: "html" | "json" | "text" | "markdown"
   placeholder?: string
   editorClassName?: string
   throttleDelay?: number
@@ -45,6 +46,7 @@ const createExtensions = (placeholder: string) => [
     code: { HTMLAttributes: { class: "inline", spellcheck: "false" } },
     dropcursor: { width: 2, class: "ProseMirror-dropcursor border" },
   }),
+  Markdown,
   Link,
   Underline,
   Image.configure({
