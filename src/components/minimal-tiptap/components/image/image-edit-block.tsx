@@ -1,17 +1,22 @@
 import * as React from "react"
 import type { Editor } from "@tiptap/react"
+import type { ComponentType } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 
 interface ImageEditBlockProps {
   editor: Editor
   close: () => void
+  /** Optional trigger for a media library picker. When provided, rendered as a "Browse media" section. */
+  imagePickerTrigger?: ComponentType<{ onSelect: (url: string) => void }>
 }
 
 export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({
   editor,
   close,
+  imagePickerTrigger: ImagePickerTrigger,
 }) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null)
   const [link, setLink] = React.useState("")
@@ -79,6 +84,22 @@ export const ImageEditBlock: React.FC<ImageEditBlockProps> = ({
       <Button type="button" className="w-full" onClick={handleClick}>
         Upload from your computer
       </Button>
+      {ImagePickerTrigger && (
+        <>
+          <Separator />
+          <div className="space-y-1.5">
+            <Label className="text-muted-foreground text-xs uppercase tracking-wider">
+              Or browse media library
+            </Label>
+            <ImagePickerTrigger
+              onSelect={(url) => {
+                editor.commands.setImages([{ src: url }])
+                close()
+              }}
+            />
+          </div>
+        </>
+      )}
       <input
         type="file"
         accept="image/*"
